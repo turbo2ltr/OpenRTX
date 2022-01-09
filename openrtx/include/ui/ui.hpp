@@ -341,8 +341,6 @@ struct TouchEvent {
 	Type type;
 };
 
-Point polar_to_point(float angle, uint32_t distance);
-
 } /* namespace ui */
 
 #endif/*__UI_H__*/

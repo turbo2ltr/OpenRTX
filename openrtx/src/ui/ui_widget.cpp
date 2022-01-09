@@ -22,15 +22,10 @@
 
 #include "ui_widget.hpp"
 #include "ui_painter.hpp"
-#include "portapack.hpp"
 
 #include <cstdint>
 #include <cstddef>
 #include <algorithm>
-
-#include "string_format.hpp"
-
-using namespace portapack;
 
 namespace ui {
 

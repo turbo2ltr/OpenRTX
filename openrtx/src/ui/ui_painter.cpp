@@ -23,9 +23,6 @@
 
 #include "ui_widget.hpp"
 
-#include "portapack.hpp"
-using namespace portapack;
-
 namespace ui {
 
 Style Style::invert() const {

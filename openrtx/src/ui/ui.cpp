@@ -20,7 +20,6 @@
  */
 
 #include "ui.hpp"
-#include "sine_table.hpp"
 
 #include <algorithm>
 
@@ -88,12 +87,6 @@ Rect& Rect::operator+=(const Point& p) {
 Rect& Rect::operator-=(const Point& p) {
 	_pos -= p;
 	return *this;
-}
-
-Point polar_to_point(float angle, uint32_t distance) {
-	//polar to compass with y negated for screen drawing
-	return Point(sin_f32(DEG_TO_RAD(-angle) + pi) * distance, 
-	             sin_f32(DEG_TO_RAD(-angle) - (pi / 2)) * distance); 
 }
 
 } /* namespace ui */
