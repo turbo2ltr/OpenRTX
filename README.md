@@ -73,6 +73,9 @@ minmea is released under the DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE v2.
 
 Code for STM32F405 USB driver is released under the MCD-ST Liberty SW License Agreement V2.
 
+OpenRTX is using the UI classes from [PortaPack Mayhem](https://github.com/eried/portapack-mayhem.git), commit dfa7dfb0243dea89920bf57e71b6f8db244b2d18\
+PortaPack Mayhem is released under the GNU GPL v3.
+
 ## Credits
 
 OpenRTX was created by:
