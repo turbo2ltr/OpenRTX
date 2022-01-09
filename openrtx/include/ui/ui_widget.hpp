@@ -135,12 +135,11 @@ private:
 		bool visible : 1;		// Object was visible during last paint.
 	};
 
-	flags_t flags {
-		.dirty = true,
-		.hidden = false,
-		.focusable = false,
-		.highlighted = false,
-		.visible = false,
+	flags_t flags {true, //dirty
+		false, //hidden
+		false, //focusable
+		false, //highlighted
+		false  //visible
 	};
 
 	static const std::vector<Widget*> no_children;

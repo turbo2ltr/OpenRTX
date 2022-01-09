@@ -26,11 +26,11 @@
 namespace ui {
 
 Style Style::invert() const {
-	return {
-		.font = font,
-		.background = foreground,
-		.foreground = background
+        Style style {font,
+		     foreground, //background
+		     background  //foreground
 	};
+        return style
 }
 
 int Painter::draw_char(const Point p, const Style& style, const char c) {
