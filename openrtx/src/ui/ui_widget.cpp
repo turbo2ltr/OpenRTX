@@ -476,13 +476,13 @@ void LiveDateTime::set_seconds_enabled(bool new_value) {
 
 BigFrequency::BigFrequency(
 	Rect parent_rect,
-	rf::Frequency frequency
+	freq_t frequency
 ) : Widget { parent_rect },
 	_frequency { frequency }
 {
 }
 
-void BigFrequency::set(const rf::Frequency frequency) {
+void BigFrequency::set(const freq_t frequency) {
 	_frequency = frequency;
 	set_dirty();
 }

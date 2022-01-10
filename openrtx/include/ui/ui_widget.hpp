@@ -34,6 +34,21 @@
 #include <string>
 #include <functional>
 
+// OpenRTX
+#include <datatypes.h>
+#include <interfaces/rtc.h>
+
+// From portapack-mayhem/firmware/application/signal.hpp 
+/* Tweaked and vastly simplified implementation of Simple::Signal, from         
+ * https://testbit.eu/cpp11-signal-system-performance/                          
+ *                                                                              
+ * Original license:                                                            
+ *   CC0 Public Domain                                                          
+ *   http://creativecommons.org/publicdomain/zero/1.0/                          
+ */                                                                             
+                                                                                
+using SignalToken = uint32_t;   
+
 namespace ui {
 
 void dirty_set();
@@ -254,21 +269,21 @@ private:
 	bool date_enabled = true;
 	bool seconds_enabled = false;
 	
-	rtc::RTC datetime { };
+	curTime_t datetime { };
 	SignalToken signal_token_tick_second { };
 	std::string text { };
 };
 
 class BigFrequency : public Widget {
 public:
-	BigFrequency(Rect parent_rect, rf::Frequency frequency);
+	BigFrequency(Rect parent_rect, freq_t frequency);
 
-	void set(const rf::Frequency frequency);
+	void set(const freq_t frequency);
 
 	void paint(Painter& painter) override;
 
 private:
-	rf::Frequency _frequency;
+	freq_t _frequency;
 	
 	static constexpr Dim digit_width = 32;
 	
