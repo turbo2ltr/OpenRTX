@@ -65,6 +65,11 @@ openrtx_inc = ['openrtx/include',
                'platform/drivers/backlight',
                'platform/drivers/chSelector']
 
+ui_src = ['openrtx/src/ui/ui.c',
+          'openrtx/src/ui/ui_main.c',
+          'openrtx/src/ui/ui_mode.c',
+          'openrtx/src/ui/ui_menu.c']
+
 main_src = []
 
 # Add to sources either the main executable or a platform test
@@ -249,7 +254,8 @@ linux_platform_src = ['platform/targets/linux/emulator/emulator.c',
                       'platform/drivers/audio/audio_linux.c',
                       'platform/drivers/audio/inputStream_linux.c',
                       'platform/targets/linux/platform.c']
-linux_src = src + linux_platform_src
+
+linux_src = src + ui_src + linux_platform_src
 
 
 # GDx family display emulation
@@ -271,68 +277,77 @@ endif
 ##
 ## TYT MD-3x0 family
 ##
-md3x0_src = src + mdx_src + stm32f405_src + ['platform/drivers/NVM/nvmem_MD3x0.c',
-                                             'platform/drivers/NVM/spiFlash_MD3x.c',
-                                             'platform/drivers/baseband/SKY72310.c',
-                                             'platform/drivers/baseband/radio_MD3x0.cpp',
-                                             'platform/drivers/baseband/HR_C5000_MDx.cpp',
-                                             'platform/drivers/keyboard/keyboard_MD3x.c',
-                                             'platform/drivers/display/HX8353_MD3x.cpp',
-                                             'platform/targets/MD-3x0/platform.c']
+md3x0_src = ['platform/drivers/NVM/nvmem_MD3x0.c',
+             'platform/drivers/NVM/spiFlash_MD3x.c',
+             'platform/drivers/baseband/SKY72310.c',
+             'platform/drivers/baseband/radio_MD3x0.cpp',
+             'platform/drivers/baseband/HR_C5000_MDx.cpp',
+             'platform/drivers/keyboard/keyboard_MD3x.c',
+             'platform/drivers/display/HX8353_MD3x.cpp',
+             'platform/targets/MD-3x0/platform.c']
 
+md3x0_src = src + ui_src + mdx_src + stm32f405_src + md3x0_src
 md3x0_inc = inc + stm32f405_inc + ['platform/targets/MD-3x0']
 md3x0_def = def + stm32f405_def + {'PLATFORM_MD3x0': '', 'timegm': 'mktime'}
 
 ##
 ## TYT MD-UV380
 ##
-mduv3x0_src = src + mdx_src + stm32f405_src + ['platform/drivers/NVM/nvmem_MDUV3x0.c',
-                                               'platform/drivers/NVM/spiFlash_MD3x.c',
-                                               'platform/targets/MD-UV3x0/platform.c',
-                                               'platform/drivers/keyboard/keyboard_MD3x.c',
-                                               'platform/drivers/display/HX8353_MD3x.cpp',
-                                               'platform/drivers/chSelector/chSelector_UV3x0.c',
-                                               'platform/drivers/baseband/radio_UV3x0.cpp',
-                                               'platform/drivers/baseband/AT1846S_UV3x0.cpp',
-                                               'platform/drivers/baseband/HR_C6000_UV3x0.cpp']
+mduv3x0_src = ['platform/drivers/NVM/nvmem_MDUV3x0.c',
+               'platform/drivers/NVM/spiFlash_MD3x.c',
+               'platform/targets/MD-UV3x0/platform.c',
+               'platform/drivers/keyboard/keyboard_MD3x.c',
+               'platform/drivers/display/HX8353_MD3x.cpp',
+               'platform/drivers/chSelector/chSelector_UV3x0.c',
+               'platform/drivers/baseband/radio_UV3x0.cpp',
+               'platform/drivers/baseband/AT1846S_UV3x0.cpp',
+               'platform/drivers/baseband/HR_C6000_UV3x0.cpp']
 
+mduv3x0_src = src + ui_src + mdx_src + stm32f405_src + mduv3x0_src
 mduv3x0_inc = inc + stm32f405_inc + ['platform/targets/MD-UV3x0']
 mduv3x0_def = def + stm32f405_def + {'PLATFORM_MDUV3x0': '', 'timegm': 'mktime'}
 
 ##
 ## TYT MD-9600
 ##
-md9600_src = src + mdx_src + stm32f405_src + ['platform/targets/MD-9600/platform.c',
-                                              'platform/drivers/display/ST7567_MD9600.c',
-                                              'platform/drivers/keyboard/keyboard_MD9600.c',
-                                              'platform/drivers/chSelector/chSelector_MD9600.c',
-                                              'platform/drivers/baseband/radio_MD9600.cpp',
-                                              'platform/drivers/NVM/nvmem_MD9600.c',
-                                              'platform/drivers/NVM/spiFlash_MD9600.c']
+md9600_src = ['platform/targets/MD-9600/platform.c',
+              'platform/drivers/display/ST7567_MD9600.c',
+              'platform/drivers/keyboard/keyboard_MD9600.c',
+              'platform/drivers/chSelector/chSelector_MD9600.c',
+              'platform/drivers/baseband/radio_MD9600.cpp',
+              'platform/drivers/NVM/nvmem_MD9600.c',
+              'platform/drivers/NVM/spiFlash_MD9600.c']
 
+md9600_src = src + ui_src + mdx_src + stm32f405_src + md9600_src
 md9600_inc = inc + stm32f405_inc + ['platform/targets/MD-9600']
 md9600_def = def + stm32f405_def + {'PLATFORM_MD9600': ''}
 
 ##
 ## Radioddity GD-77
 ##
-gd77_src = src + gdx_src + mk22fn512_src + ['platform/targets/GD-77/platform.c']
+gd77_src = ['platform/targets/GD-77/platform.c']
 
+gd77_src = src + ui_src + gdx_src + mk22fn512_src + gd77_src
 gd77_inc = inc + mk22fn512_inc + ['platform/targets/GD-77']
 gd77_def = def + mk22fn512_def + {'PLATFORM_GD77': ''}
 
 ##
 ## Baofeng DM-1801
 ##
-dm1801_src = src + gdx_src + mk22fn512_src + ['platform/targets/DM-1801/platform.c']
+dm1801_src = ['platform/targets/DM-1801/platform.c']
 
+dm1801_src = src + ui_src + gdx_src + mk22fn512_src + dm1801_src
 dm1801_inc = inc + mk22fn512_inc + ['platform/targets/DM-1801']
 dm1801_def = def + mk22fn512_def + {'PLATFORM_DM1801': ''}
 
 ##
 ## Module 17
 ##
-mod17_src = src + stm32f405_src + ['platform/targets/Module17/platform.c',
+mod17_src = src + stm32f405_src + ['openrtx/src/ui_mod17/ui.c',
+                                   'openrtx/src/ui_mod17/ui_main.c',
+                                   'openrtx/src/ui_mod17/ui_mode.c',
+                                   'openrtx/src/ui_mod17/ui_menu.c',
+                                   'platform/targets/Module17/platform.c',
                                    'platform/drivers/display/SH110x_Mod17.c',
                                    'platform/drivers/ADC/ADC1_Mod17.c',
                                    'platform/drivers/keyboard/keyboard_Mod17.c',
