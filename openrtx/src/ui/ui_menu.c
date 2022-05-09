@@ -243,7 +243,7 @@ int _ui_getInfoValueName(char *buf, uint8_t max_len, uint8_t index)
             snprintf(buf, max_len, "%s", hwinfo->name);
             break;
         case 5: // Band
-            snprintf(buf, max_len, "%s %s", hwinfo->vhf_band ? "VHF" : "", hwinfo->uhf_band ? "UHF" : "");
+            snprintf(buf, max_len, "%s %s", hwinfo->vhf_band ? currentLanguage->VHF : "", hwinfo->uhf_band ? currentLanguage->UHF : "");
             break;
         case 6: // VHF
             snprintf(buf, max_len, "%d - %d", hwinfo->vhf_minFreq, hwinfo->vhf_maxFreq);
@@ -264,7 +264,7 @@ int _ui_getBankName(char *buf, uint8_t max_len, uint8_t index)
     // First bank "All channels" is not read from flash
     if(index == 0)
     {
-        snprintf(buf, max_len, "All channels");
+        snprintf(buf, max_len, currentLanguage->allChannels);
     }
     else
     {
@@ -299,7 +299,7 @@ void _ui_drawMenuTop(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Menu" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Menu");
+              color_white, currentLanguage->menu);
     // Print menu entries
     _ui_drawMenuList(ui_state->menu_selected, _ui_getMenuTopEntryName);
 }
@@ -309,7 +309,7 @@ void _ui_drawMenuBank(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Bank" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Bank");
+              color_white, currentLanguage->bank);
     // Print bank entries
     _ui_drawMenuList(ui_state->menu_selected, _ui_getBankName);
 }
@@ -319,7 +319,7 @@ void _ui_drawMenuChannel(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Channel" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Channels");
+              color_white, currentLanguage->channels);
     // Print channel entries
     _ui_drawMenuList(ui_state->menu_selected, _ui_getChannelName);
 }
@@ -329,7 +329,7 @@ void _ui_drawMenuContacts(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Contacts" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Contacts");
+              color_white, currentLanguage->contacts);
     // Print contact entries
     _ui_drawMenuList(ui_state->menu_selected, _ui_getContactName);
 }
@@ -341,18 +341,18 @@ void _ui_drawMenuGPS()
     gfx_clearScreen();
     // Print "GPS" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "GPS");
+              color_white, currentLanguage->gps);
     point_t fix_pos = {layout.line2_pos.x, SCREEN_HEIGHT * 2 / 5};
     // Print GPS status, if no fix, hide details
     if(!last_state.settings.gps_enabled)
         gfx_print(fix_pos, layout.line3_font, TEXT_ALIGN_CENTER,
-                  color_white, "GPS OFF");
+                  color_white, currentLanguage->gpsOff);
     else if (last_state.gps_data.fix_quality == 0)
         gfx_print(fix_pos, layout.line3_font, TEXT_ALIGN_CENTER,
-                  color_white, "No Fix");
+                  color_white, currentLanguage->noFix);
     else if (last_state.gps_data.fix_quality == 6)
         gfx_print(fix_pos, layout.line3_font, TEXT_ALIGN_CENTER,
-                  color_white, "Fix Lost");
+                  color_white, currentLanguage->fixLost);
     else
     {
         switch(last_state.gps_data.fix_quality)
@@ -367,7 +367,7 @@ void _ui_drawMenuGPS()
                 fix_buf = "PPS";
                 break;
             default:
-                fix_buf = "ERROR";
+                fix_buf = currentLanguage->error;
                 break;
         }
 
@@ -383,7 +383,7 @@ void _ui_drawMenuGPS()
                 type_buf = "3D";
                 break;
             default:
-                type_buf = "ERROR";
+                type_buf = currentLanguage->error;
                 break;
         }
         gfx_print(layout.line1_pos, layout.top_font, TEXT_ALIGN_LEFT,
@@ -429,7 +429,7 @@ void _ui_drawMenuSettings(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Settings" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Settings");
+              color_white, currentLanguage->settings);
     // Print menu entries
     _ui_drawMenuList(ui_state->menu_selected, _ui_getSettingsEntryName);
 }
@@ -439,7 +439,7 @@ void _ui_drawMenuBackupRestore(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Backup & Restore" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Backup & Restore");
+              color_white, currentLanguage->backupAndRestore);
     // Print menu entries
     _ui_drawMenuList(ui_state->menu_selected, _ui_getBackupRestoreEntryName);
 }
@@ -451,17 +451,17 @@ void _ui_drawMenuBackup(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Flash Backup" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Flash Backup");
+              color_white, currentLanguage->flashBackup);
     // Print backup message
     point_t line = layout.line2_pos;
     gfx_print(line, FONT_SIZE_8PT, TEXT_ALIGN_CENTER,
-              color_white, "Connect to RTXTool");
+              color_white, currentLanguage->connectToRTXTool);
     line.y += 18;
     gfx_print(line, FONT_SIZE_8PT, TEXT_ALIGN_CENTER,
-              color_white, "to backup flash and");
+              color_white, currentLanguage->toBackupFlashAnd);
     line.y += 18;
     gfx_print(line, FONT_SIZE_8PT, TEXT_ALIGN_CENTER,
-              color_white, "press PTT to start.");
+              color_white, currentLanguage->pressPTTToStart);
 
     // Shutdown RF stage
     state.rtxShutdown = true;
@@ -482,19 +482,19 @@ void _ui_drawMenuRestore(ui_state_t* ui_state)
     (void) ui_state;
 
     gfx_clearScreen();
-    // Print "Flash Backup" on top bar
+    // Print "Flash Restore" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Flash Restore");
+              color_white, currentLanguage->flashRestore);
     // Print backup message
     point_t line = layout.line2_pos;
     gfx_print(line, FONT_SIZE_8PT, TEXT_ALIGN_CENTER,
-              color_white, "Connect to RTXTool");
+              color_white, currentLanguage->connectToRTXTool);
     line.y += 18;
     gfx_print(line, FONT_SIZE_8PT, TEXT_ALIGN_CENTER,
-              color_white, "to restore flash and");
+              color_white, currentLanguage->toRestoreFlashAnd);
     line.y += 18;
     gfx_print(line, FONT_SIZE_8PT, TEXT_ALIGN_CENTER,
-              color_white, "press PTT to start.");
+              color_white, currentLanguage->pressPTTToStart);
 
     // Shutdown RF stage
     state.rtxShutdown = true;
@@ -515,7 +515,7 @@ void _ui_drawMenuInfo(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Info" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Info");
+              color_white, currentLanguage->info);
     // Print menu entries
     _ui_drawMenuListValue(ui_state, ui_state->menu_selected, _ui_getInfoEntryName,
                            _ui_getInfoValueName);
@@ -529,13 +529,13 @@ void _ui_drawMenuAbout()
         ui_drawSplashScreen(false);
     else
         gfx_print(openrtx_pos, layout.line3_font, TEXT_ALIGN_CENTER,
-                  color_white, "OpenRTX");
+                  color_white, currentLanguage->openRTX);
     uint8_t line_h = layout.menu_h;
     point_t pos = {SCREEN_WIDTH / 7, SCREEN_HEIGHT - (line_h * (author_num - 1)) - 5};
     for(int author = 0; author < author_num; author++)
     {
         gfx_print(pos, layout.top_font, TEXT_ALIGN_LEFT,
-                  color_white, "%s", authors[author]);
+                  color_white, "%s", currentLanguage->Niccolo+(author * sizeof(char*)));
         pos.y += line_h;
     }
 }
@@ -545,7 +545,7 @@ void _ui_drawSettingsDisplay(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Display" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Display");
+              color_white, currentLanguage->display);
     // Print display settings entries
     _ui_drawMenuListValue(ui_state, ui_state->menu_selected, _ui_getDisplayEntryName,
                            _ui_getDisplayValueName);
@@ -557,7 +557,7 @@ void _ui_drawSettingsGPS(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "GPS Settings" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "GPS Settings");
+              color_white, currentLanguage->gpsSettings);
     // Print display settings entries
     _ui_drawMenuListValue(ui_state, ui_state->menu_selected,
                           _ui_getSettingsGPSEntryName,
@@ -572,7 +572,7 @@ void _ui_drawSettingsTimeDate()
     curTime_t local_time = state_getLocalTime(last_state.time);
     // Print "Time&Date" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Time&Date");
+              color_white, currentLanguage->timeAndDate);
     // Print current time and date
     gfx_print(layout.line2_pos, layout.input_font, TEXT_ALIGN_CENTER,
               color_white, "%02d/%02d/%02d",
@@ -589,7 +589,7 @@ void _ui_drawSettingsTimeDateSet(ui_state_t* ui_state)
     gfx_clearScreen();
     // Print "Time&Date" on top bar
     gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_CENTER,
-              color_white, "Time&Date");
+              color_white, currentLanguage->timeAndDate);
     if(ui_state->input_position <= 0)
     {
         strcpy(ui_state->new_date_buf, "__/__/__");
