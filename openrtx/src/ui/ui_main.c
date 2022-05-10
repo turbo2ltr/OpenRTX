@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <ui.h>
 #include <string.h>
+#include "ui/UIStrings.h"
 
 void _ui_drawMainBackground()
 {
@@ -59,15 +60,15 @@ void _ui_drawMainTop()
     {
         case OPMODE_FM:
         gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_LEFT,
-                  color_white, "FM");
+                  color_white, currentLanguage->fm);
         break;
         case OPMODE_DMR:
         gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_LEFT,
-                  color_white, "DMR");
+                  color_white, currentLanguage->dmr);
         break;
         case OPMODE_M17:
         gfx_print(layout.top_pos, layout.top_font, TEXT_ALIGN_LEFT,
-                  color_white, "M17");
+                  color_white, currentLanguage->m17);
         break;
     }
 }
@@ -75,15 +76,12 @@ void _ui_drawMainTop()
 void _ui_drawBankChannel()
 {
     // Print Bank name
-    if(!last_state.bank_enabled)
-        gfx_print(layout.line1_pos, layout.line1_font, TEXT_ALIGN_LEFT,
-                  color_white, "bank: All channels");
-    else {
-        bankHdr_t bank = { 0 };
-        cps_readBankHeader(&bank, last_state.bank);
-        gfx_print(layout.line1_pos, layout.line1_font, TEXT_ALIGN_LEFT,
-                  color_white,  "bank: %.13s", bank.name);
-    }
+	char buf[16] = "\0";
+	snprintf(buf, 16, "%s: %.13s",
+             currentLanguage->bank,
+             last_state.bank_enabled ? last_state.bank.name	: currentLanguage->allChannels);
+	gfx_print(layout.line1_pos, layout.line1_font, TEXT_ALIGN_LEFT,
+                  color_white, buf);
     // Print Channel name
     gfx_print(layout.line2_pos, layout.line2_font, TEXT_ALIGN_LEFT,
               color_white, "  %03d: %.12s",
