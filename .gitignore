@@ -71,3 +71,7 @@ scripts/get_demod_log
 
 # OpenRTX Codeplugs
 *.rtxc
+
+# Codec2 binaries for windows
+!scripts/c2dec.exe
+!scripts/c2enc.exe
