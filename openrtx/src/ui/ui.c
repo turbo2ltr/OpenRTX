@@ -163,7 +163,7 @@ const char *settings_gps_items[] =
 #endif
 const char * settings_voice_items[] =
 {
-	"Voice Level",
+	"Voice",
 	"Phonetic"
 };
 
