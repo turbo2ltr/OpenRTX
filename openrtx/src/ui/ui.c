@@ -790,9 +790,7 @@ void _ui_fsm_menuMacro(kbd_msg_t msg, bool *sync_rtx)
     bool tone_tx_enable = state.channel.fm.txToneEn;
     bool tone_rx_enable = state.channel.fm.rxToneEn;
     uint8_t tone_flags = tone_tx_enable << 1 | tone_rx_enable;
-	VoicePromptQueueFlags_T queueFlags=vpqInit | vpqPlayImmediately;
-	if (!vpIsPlaying())
-		queueFlags |= vpqIncludeDescriptions;
+	VoicePromptQueueFlags_T queueFlags=GetQueueFlagsForVoiceLevel();
 	
     switch(ui_state.input_number)
     {
@@ -1039,6 +1037,7 @@ void ui_updateFSM(event_t event, bool *sync_rtx)
         kbd_msg_t msg;
         msg.value = event.payload;
 		bool f1Handled = false;
+		VoicePromptQueueFlags_T queueFlags = GetQueueFlagsForVoiceLevel();
         // If we get out of standby, we ignore the kdb event
         // unless is the MONI key for the MACRO functions
         if (_ui_exitStandby(now) && !(msg.keys & KEY_MONI))
@@ -1068,7 +1067,7 @@ void ui_updateFSM(event_t event, bool *sync_rtx)
                         state.channel.rx_frequency += 12500;
                         state.channel.tx_frequency += 12500;
                         *sync_rtx = true;
-						announceFrequencies(state.channel.rx_frequency, state.channel.tx_frequency, (vpqInit | vpqPlayImmediately));
+						announceFrequencies(state.channel.rx_frequency, state.channel.tx_frequency, queueFlags);
                     }
                 }
                 else if(msg.keys & KEY_DOWN || msg.keys & KNOB_LEFT)
@@ -1080,7 +1079,7 @@ void ui_updateFSM(event_t event, bool *sync_rtx)
                         state.channel.rx_frequency -= 12500;
                         state.channel.tx_frequency -= 12500;
                         *sync_rtx = true;
-						announceFrequencies(state.channel.rx_frequency, state.channel.tx_frequency, (vpqInit | vpqPlayImmediately));
+						announceFrequencies(state.channel.rx_frequency, state.channel.tx_frequency, queueFlags);
                     }
                 }
                 else if(msg.keys & KEY_ENTER)
@@ -1103,7 +1102,7 @@ void ui_updateFSM(event_t event, bool *sync_rtx)
                         // Switch to MEM screen
                         state.ui_screen = MAIN_MEM;
 						// anounce the active channel name.
-						announceChannelName(&state.channel, state.channel_index, (vpqInit | vpqPlayImmediately));
+						announceChannelName(&state.channel, state.channel_index, queueFlags);
                     }
                 }
                 else if(msg.keys & KEY_F1)
@@ -1111,7 +1110,7 @@ void ui_updateFSM(event_t event, bool *sync_rtx)
 					if (state.settings.vpLevel > vpBeep)
 					{// quick press repeat vp, long press summary.
 						if (msg.long_press)
-							announceChannelSummary(&state.channel, 0, (vpqInit|vpqPlayImmediately));
+							announceChannelSummary(&state.channel, 0, (vpqInit | vpqPlayImmediately));
 						else
 							ReplayLastPrompt();
 						f1Handled = true;
@@ -1155,12 +1154,12 @@ void ui_updateFSM(event_t event, bool *sync_rtx)
                     if(ui_state.input_set == SET_RX)
 					{
                         ui_state.input_set = SET_TX;
-						announceInputReceiveOrTransmit(true, (vpqInit | vpqPlayImmediately));
+						announceInputReceiveOrTransmit(true, queueFlags);
 					}
                     else if(ui_state.input_set == SET_TX)
 					{
                         ui_state.input_set = SET_RX;
-						announceInputReceiveOrTransmit(false, (vpqInit | vpqPlayImmediately));
+						announceInputReceiveOrTransmit(false, queueFlags);
 					}
                     // Reset input position
                     ui_state.input_position = 0;
@@ -1194,7 +1193,7 @@ void ui_updateFSM(event_t event, bool *sync_rtx)
 					{// quick press repeat vp, long press summary.
 						if (msg.long_press)
 							announceChannelSummary(&state.channel, state.channel_index, 
-						(vpqInit|vpqPlayImmediately));
+						(vpqInit | vpqPlayImmediately));
 						else
 							ReplayLastPrompt();
 						f1Handled=true;
