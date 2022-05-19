@@ -549,6 +549,5 @@ VoicePromptQueueFlags_T GetQueueFlagsForVoiceLevel()
 		break;
 	}
 	
-return flags;
+	return flags;
 }
-
