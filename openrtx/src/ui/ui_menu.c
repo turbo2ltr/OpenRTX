@@ -467,7 +467,7 @@ void _ui_drawMenuGPS()
                 fix_buf = "PPS";
                 break;
             default:
-                fix_buf = currentLanguage->error;
+                fix_buf = (char*)currentLanguage->error;
                 break;
         }
 
@@ -483,7 +483,7 @@ void _ui_drawMenuGPS()
                 type_buf = "3D";
                 break;
             default:
-                type_buf = currentLanguage->error;
+                type_buf = (char*)currentLanguage->error;
                 break;
         }
         gfx_print(layout.line1_pos, layout.top_font, TEXT_ALIGN_LEFT,
