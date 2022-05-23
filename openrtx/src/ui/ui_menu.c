@@ -103,7 +103,7 @@ static void announceMenuItemIfNeeded(char* name, char* value)
 		announceText(name, vpqDefault);
 	
 	if (value && *value)
-		announceText(name, vpqDefault);
+		announceText(value, vpqDefault);
 		
 	vpPlay();
 }
