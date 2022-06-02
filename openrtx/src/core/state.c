@@ -62,6 +62,7 @@ void state_init()
     state.v_bat  = platform_getVbat();
     state.charge = battery_getCharge(state.v_bat);
     state.rssi   = -127.0f;
+    state.filesystem_ready = false;
 
     state.channel_index = 1;    // Set default channel index (it is 1-based)
     state.bank_enabled  = false;

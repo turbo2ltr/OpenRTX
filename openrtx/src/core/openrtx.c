@@ -26,6 +26,8 @@
 #include <threads.h>
 #include <openrtx.h>
 #include <ui.h>
+#include <lfs.h>
+#include <backup.h>
 
 extern void *dev_task(void *arg);
 
@@ -35,6 +37,7 @@ void openrtx_init()
 
     platform_init();    // Initialize low-level platform drivers
     state_init();       // Initialize radio state
+    lfs_init();         // Initialize LittleFS filesystem
 
     gfx_init();         // Initialize display and graphics driver
     kbd_init();         // Initialize keyboard driver
@@ -76,9 +79,48 @@ void openrtx_init()
     #endif
 }
 
+#if !defined(PLATFORM_LINUX) && !defined(PLATFORM_MOD17)
+void _openrtx_backup()
+{
+    ui_drawBackupScreen();
+    gfx_render();
+    // Wait 30ms before turning on backlight to hide random pixels on screen
+    sleepFor(0u, 30u);
+    platform_setBacklightLevel(state.settings.brightness);
+    // Wait for backup over serial xmodem
+    eflash_dump();
+    // Backup completed: Ask user confirmation for flash initialization
+    ui_drawFlashInitScreen();
+    gfx_render();
+    while(true)
+    {
+        if(platform_getPttStatus() == true)
+        {
+            lfs_format();
+            // Flash init completed: shutdown
+            break;
+        }
+        if(platform_pwrButtonStatus() == false)
+        {
+            // User wants to quit: shutdown
+            break;
+        }
+    }
+    // Shutdown
+    platform_terminate();
+    NVIC_SystemReset();
+}
+#endif
+
 void *openrtx_run()
 {
     state.devStatus = RUNNING;
+
+    #if !defined(PLATFORM_LINUX) && !defined(PLATFORM_MOD17)
+    // If filesystem initialization failed, enter backup mode (sink state)
+    if(state.filesystem_ready == false)
+        _openrtx_backup();
+    #endif
 
     // Start the OpenRTX threads
     create_threads();
