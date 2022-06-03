@@ -1887,6 +1887,8 @@ void ui_updateFSM(event_t event, bool *sync_rtx)
     }
     else if(event.type == EVENT_STATUS)
     {
+		ReleaseFunctionLatchIfNeeded();
+
         if (txOngoing || rtx_rxSquelchOpen())
         {
             _ui_exitStandby(now);
