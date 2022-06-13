@@ -37,9 +37,12 @@ void openrtx_init()
 
     platform_init();                 // Initialize low-level platform drivers
     state_init();                    // Initialize radio state
+
+    #ifdef ENABLE_FILESYSTEM
     int status = filesystem_init();  // Initialize filesystem
     if(status == 0)
         state.filesystem_ready = true;
+    #endif
 
     gfx_init();         // Initialize display and graphics driver
     kbd_init();         // Initialize keyboard driver
@@ -81,7 +84,9 @@ void openrtx_init()
     #endif
 }
 
-#if !defined(PLATFORM_LINUX) && !defined(PLATFORM_MOD17)
+#if defined(ENABLE_FILESYSTEM) && \
+   !defined(PLATFORM_LINUX)    && \
+   !defined(PLATFORM_MOD17)
 static void _openrtx_backup()
 {
     ui_drawBackupScreen();
@@ -98,7 +103,7 @@ static void _openrtx_backup()
     {
         if(platform_getPttStatus() == true)
         {
-            int err = filesystem_format();
+            filesystem_format();
             // Flash init completed: reboot
             NVIC_SystemReset();
             break;
@@ -117,9 +122,9 @@ static void _openrtx_backup()
 
 void *openrtx_run()
 {
-    state.devStatus = RUNNING;
-
-    #if !defined(PLATFORM_LINUX) && !defined(PLATFORM_MOD17)
+    #if defined(ENABLE_FILESYSTEM) && \
+       !defined(PLATFORM_LINUX)    && \
+       !defined(PLATFORM_MOD17)
     // If filesystem initialization failed, enter backup mode (sink state)
     if(state.filesystem_ready == false)
         _openrtx_backup();
