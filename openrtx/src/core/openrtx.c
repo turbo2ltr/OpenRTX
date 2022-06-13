@@ -35,9 +35,11 @@ void openrtx_init()
 {
     state.devStatus = STARTUP;
 
-    platform_init();    // Initialize low-level platform drivers
-    state_init();       // Initialize radio state
-    filesystem_init();  // Initialize filesystem
+    platform_init();                 // Initialize low-level platform drivers
+    state_init();                    // Initialize radio state
+    int status = filesystem_init();  // Initialize filesystem
+    if(status == 0)
+        state.filesystem_ready = true;
 
     gfx_init();         // Initialize display and graphics driver
     kbd_init();         // Initialize keyboard driver
@@ -80,7 +82,7 @@ void openrtx_init()
 }
 
 #if !defined(PLATFORM_LINUX) && !defined(PLATFORM_MOD17)
-void _openrtx_backup()
+static void _openrtx_backup()
 {
     ui_drawBackupScreen();
     gfx_render();
