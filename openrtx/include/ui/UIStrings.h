@@ -30,7 +30,7 @@ typedef struct
 	const char* languageName;
 	const char* off;
 	const char* on;
-	const char* zone;
+	const char* bank;
 	const char* channels;
 	const char* contacts;
 	const char* gps;

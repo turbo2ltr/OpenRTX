@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <state.h>
-#include "interfaces/nvmem.h"
+#include "interfaces/cps_io.h"
 #include "core/voicePromptUtils.h"
 
 static void vpInitIfNeeded(VoicePromptQueueFlags_T flags)
@@ -132,13 +132,13 @@ void announceRadioMode(uint8_t mode, VoicePromptQueueFlags_T flags)
 	
 	switch(mode)
 	{
-		case DMR:
+		case OPMODE_DMR:
 			vpQueueStringTableEntry(&currentLanguage->dmr);
 			break;
-		case FM:
+		case OPMODE_FM:
 			vpQueueStringTableEntry(&currentLanguage->fm);
 			break;
-		case M17:
+		case OPMODE_M17:
 			vpQueueStringTableEntry(&currentLanguage->m17);
 			break;
 	}
@@ -179,7 +179,7 @@ void anouncePower(float power, VoicePromptQueueFlags_T flags)
 	vpPlayIfNeeded(flags);
 }
 
-void announceChannelSummary(channel_t* channel, uint16_t channelIndex)
+void announceChannelSummary(channel_t* channel, uint16_t channelIndex, uint16_t bank)
 {
 	 	if (!channel) return;
 		
@@ -197,7 +197,7 @@ void announceChannelSummary(channel_t* channel, uint16_t channelIndex)
 		announceChannelName(channel, channelIndex, localFlags);
 	announceFrequencies(channel->rx_frequency , channel->tx_frequency, localFlags);
 	announceRadioMode(channel->mode,  localFlags);
-	if (channel->mode == FM)
+	if (channel->mode == OPMODE_FM)
 	{
 		announceBandwidth(channel->bandwidth, localFlags);
 		addSilenceIfNeeded(localFlags);
@@ -209,15 +209,15 @@ void announceChannelSummary(channel_t* channel, uint16_t channelIndex)
 	localFlags);
 		}
 	}
-	else if (channel->mode == M17)
+	else if (channel->mode == OPMODE_M17)
 	{
 		addSilenceIfNeeded(localFlags);
 		announceM17Info(channel, localFlags);
 	}
-	else if (channel->mode == DMR)
+	else if (channel->mode == OPMODE_DMR)
 	{
 		addSilenceIfNeeded(localFlags);
-		announceContactWithIndex(channel->dmr.contactName_index, localFlags);
+		announceContactWithIndex(channel->dmr.contact_index, localFlags);
 		// Force announcement of the words timeslot and colorcode to avoid ambiguity. 
 		announceTimeslot(channel->dmr.dmr_timeslot, (localFlags | vpqIncludeDescriptions));
 		announceColorCode(channel->dmr.rxColorCode, channel->dmr.txColorCode, (localFlags | vpqIncludeDescriptions));
@@ -228,7 +228,7 @@ void announceChannelSummary(channel_t* channel, uint16_t channelIndex)
 	addSilenceIfNeeded(localFlags);
 
 	if (channelIndex > 0) // i.e. not called from VFO.
-		announceZone(localFlags);
+		announceBank(bank, localFlags);
 		
 	vpPlay();
 }
@@ -374,8 +374,6 @@ void announceContact(contact_t* contact, VoicePromptQueueFlags_T flags)
 	
 	if (contact->name[0])
 		vpQueueString(contact->name, vpAnnounceCommonSymbols);
-	else
-		vpQueueInteger(contact->id);
 
 	vpPlayIfNeeded(flags);
 }
@@ -387,7 +385,7 @@ void announceContactWithIndex(uint16_t index, VoicePromptQueueFlags_T flags)
 	
 	contact_t contact;
 	
-	if (nvm_readContactData(&contact, index) == -1)
+	if (cps_readContact(&contact, index) == -1)
 		return;
 	
 	announceContact(&contact, flags);
@@ -427,16 +425,19 @@ void  announceColorCode(uint8_t rxColorCode, uint8_t txColorCode, VoicePromptQue
 	vpPlayIfNeeded(flags);
 }
 
-void announceZone(VoicePromptQueueFlags_T flags)
+void announceBank(uint16_t bank, VoicePromptQueueFlags_T flags)
 {
 	vpInitIfNeeded(flags);
 	if (flags & vpqIncludeDescriptions)
-		vpQueueStringTableEntry(&currentLanguage->zone);
+		vpQueueStringTableEntry(&currentLanguage->bank);
 
-	if (state.zone_enabled)
-		vpQueueString(state.zone.name, vpAnnounceCommonSymbols);
-	else
-		vpQueueStringTableEntry(&currentLanguage->allChannels);
+	if (state.bank_enabled)
+    {
+        bankHdr_t bank_hdr = { 0 };
+        cps_readBankHeader(&bank_hdr, bank);
+		vpQueueString(bank_hdr.name, vpAnnounceCommonSymbols);
+    } else
+        vpQueueStringTableEntry(&currentLanguage->allChannels);
 	
 	vpPlayIfNeeded(flags);
 }
@@ -452,8 +453,8 @@ void announceM17Info(channel_t* channel, VoicePromptQueueFlags_T flags)
 			vpQueuePrompt(PROMPT_DEST_ID);
 		vpQueueString(state.m17_data.dst_addr, vpAnnounceCommonSymbols);
 	}
-	else if (channel->m17.contactName_index)
-		announceContactWithIndex(channel->m17.contactName_index, flags);
+	else if (channel->m17.contact_index)
+		announceContactWithIndex(channel->m17.contact_index, flags);
 	
 	vpPlayIfNeeded(flags);
 }

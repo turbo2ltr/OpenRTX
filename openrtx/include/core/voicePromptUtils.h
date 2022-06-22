@@ -44,7 +44,7 @@ void vpQueueFrequency(freq_t freq);
 void announceFrequencies(freq_t rx, freq_t tx, VoicePromptQueueFlags_T flags);
 void announceRadioMode(uint8_t mode, VoicePromptQueueFlags_T flags);
 void announceBandwidth(uint8_t bandwidth, VoicePromptQueueFlags_T flags);
-void announceChannelSummary(channel_t* channel, uint16_t channelIndex);
+void announceChannelSummary(channel_t* channel, uint16_t channelIndex, uint16_t bank);
 void AnnounceInputChar(char ch);
 void announceInputReceiveOrTransmit(bool tx, VoicePromptQueueFlags_T flags);
 void ReplayLastPrompt();
@@ -64,7 +64,7 @@ void announceContact(contact_t* contact, VoicePromptQueueFlags_T flags);
 void announceContactWithIndex(uint16_t index, VoicePromptQueueFlags_T flags);
 void announceTimeslot(uint8_t timeslot, VoicePromptQueueFlags_T flags);
 void  announceColorCode(uint8_t rxColorCode, uint8_t txColorCode, VoicePromptQueueFlags_T flags);
-void announceZone(VoicePromptQueueFlags_T flags);
+void announceBank(uint16_t bank, VoicePromptQueueFlags_T flags);
 void announceM17Info(channel_t* channel, VoicePromptQueueFlags_T flags);
 #ifdef HAS_GPS
 void announceGPSInfo();
