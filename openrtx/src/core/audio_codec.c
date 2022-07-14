@@ -296,25 +296,24 @@ static void *decodeFunc(void *arg)
             #ifdef PLATFORM_MD3x0
             // Bump up volume a little bit, as on MD3x0 is quite low
             int16_t gain_vol = platform_getVolumeLevel() /24;
-            
-           
+      
             int16_t threshold = 24319;
             int16_t ratio = 4;
             int32_t sample;
             
-            
-            //sample = abs(audioBuf[i]) * gain_vol;
-            
             // peak detection
-            audio_sample_t maxPeak = 0;
+            bool_t aboveThresh = false;
             for(size_t i = 0; i < 160; i++)
             {
                 sample = abs(audioBuf[i]) * gain_vol;
-                if(sample > maxPeak) 
-                    maxPeak = sample;
+                if(sample > threshold) 
+                {
+                    aboveThresh = true;
+                    break;
+                }
             }
             
-            if(maxPeak > threshold)
+            if(aboveThresh)
             {  // we need to compress
                 // out = threshold + (in - threshold) / ratio
                 for(size_t i = 0; i < 160; i++)
