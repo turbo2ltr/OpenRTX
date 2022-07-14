@@ -295,8 +295,38 @@ static void *decodeFunc(void *arg)
 
             #ifdef PLATFORM_MD3x0
             // Bump up volume a little bit, as on MD3x0 is quite low
-            int16_t setPoint = platform_getVolumeLevel() /24;
-            for(size_t i = 0; i < 160; i++) audioBuf[i] *= setPoint;
+            int16_t gain_vol = platform_getVolumeLevel() /24;
+            
+           
+            int16_t threshold = 24319;
+            int16_t ratio = 4;
+            int32_t sample;
+            
+            
+            temp = abs(audioBuf[i]) * gain_vol;
+            
+            // peak detection
+            audio_sample_t maxPeak = 0;
+            for(size_t i = 0; i < 160; i++)
+            {
+                sample = abs(audioBuf[i]) * gain_vol;
+                if(sample > maxPeak) 
+                    maxPeak = sample;
+            }
+            
+            if(maxPeak > threshold)
+            {  // we need to compress
+                // out = threshold + (in - threshold) / ratio
+                for(size_t i = 0; i < 160; i++)
+                {
+                   sample = audioBuf[i] * gain_vol;
+                   audioBuf[i] = threshold + (sample - threshold) / ratio;
+                }
+            }   
+            else
+                for(size_t i = 0; i < 160; i++) audioBuf[i] *= gain_vol;    // no compression
+            
+            
             #endif
             
             #if defined(PLATFORM_MD3x0) || defined(PLATFORM_MDUV3x0)
@@ -317,6 +347,39 @@ static void *decodeFunc(void *arg)
             
 
                 for(size_t i = 0; i < 160; i++) audioBuf[i] *= gain;
+                
+                
+                
+                
+            temp = abs(audioBuf[i]) * gain_vol;
+            if(temp > threshold)
+            {
+                
+            
+            sidechain = abs(audioBuf[i]);
+           
+            // out = sidechain vca * in
+            
+            
+            // if in  < threshold then out = in
+            // if in > threshold then
+            
+            
+            
+            for(size_t i = 0; i < 160; i++) 
+            {
+                sidechain =  audioBuf[i];
+                gainstage =  audioBuf[i];
+                
+                * gain_vol;
+                
+                if (audioBuf[i] != 0 && a / audioBuf[i] != gain_vol) 
+                { // distortion
+                    
+                    
+                }
+            
+            }
                 */
             #endif
 
