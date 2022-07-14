@@ -298,8 +298,10 @@ static void *decodeFunc(void *arg)
             int16_t gain_vol = platform_getVolumeLevel() /16;
       
             int16_t threshold = 30207;
+            int16_t gate = 256;
             int16_t ratio = 3;
             int32_t sample;
+            int32_t peak = 0;
             
             // peak detection
             bool aboveThresh = false;
@@ -309,8 +311,10 @@ static void *decodeFunc(void *arg)
                 if(sample > threshold) 
                 {
                     aboveThresh = true;
-                    break;
+                   
                 }
+                if(sample > peak)
+                    peak = sample;
             }
             
             if(aboveThresh)
@@ -323,7 +327,19 @@ static void *decodeFunc(void *arg)
                 }
             }   
             else
-                for(size_t i = 0; i < 160; i++) audioBuf[i] *= gain_vol;    // no compression
+            {   // no compression
+                
+                for(size_t i = 0; i < 160; i++)
+                {
+                    // gate it if it's quiet.
+                    if(peak < gate)
+                    { // everthing in this sample set is pretty low. gate it.
+                        audioBuf[i] *= (gain_vol/ratio);  
+                    }
+                    else
+                        audioBuf[i] *= gain_vol;  
+                }
+            }
             
             
             #endif
