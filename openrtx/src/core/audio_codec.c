@@ -302,7 +302,7 @@ static void *decodeFunc(void *arg)
             int32_t sample;
             
             // peak detection
-            bool_t aboveThresh = false;
+            bool aboveThresh = false;
             for(size_t i = 0; i < 160; i++)
             {
                 sample = abs(audioBuf[i]) * gain_vol;
