@@ -294,9 +294,8 @@ static void *decodeFunc(void *arg)
             codec2_decode(codec2, audioBuf, ((uint8_t *) &frame));
 
             #ifdef PLATFORM_MD3x0
-            // Bump up volume a little bit, as on MD3x0 is quite low
+            // Basic volume control with an effort to compress the top end and gate the bottom end.
             int16_t gain_vol = platform_getVolumeLevel() /16;
-      
             int16_t threshold = 27647;
             int16_t gateThresh = 512;
             int16_t ratio = 3;
@@ -308,19 +307,16 @@ static void *decodeFunc(void *arg)
             for(size_t i = 0; i < 160; i++)
             {
                 sample = abs(audioBuf[i]);
-                
                 if(sample > peak)
                     peak = sample;
                 
                 sample *= gain_vol;
-                
                 if(sample > threshold) 
                     aboveThresh = true;
             }
             
             if(aboveThresh)
             {  // we need to compress
-                // out = threshold + (in - threshold) / ratio
                 for(size_t i = 0; i < 160; i++)
                 {
                    sample = audioBuf[i] * gain_vol;
@@ -329,20 +325,14 @@ static void *decodeFunc(void *arg)
             }   
             else
             {   // no compression
-                
                 for(size_t i = 0; i < 160; i++)
                 {
-                    // gate it if it's quiet.
                     if(peak < gateThresh)
-                    { // everthing in this sample set is pretty low. gate it.
-                        audioBuf[i] = 0;  
-                    }
+                        audioBuf[i] = 0;  // everthing in this sample set is pretty low. gate it.
                     else
                         audioBuf[i] *= gain_vol;  
                 }
             }
-            
-            
             #endif
             
             #if defined(PLATFORM_MD3x0) || defined(PLATFORM_MDUV3x0)
