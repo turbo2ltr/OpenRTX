@@ -295,7 +295,7 @@ static void *decodeFunc(void *arg)
 
             #ifdef PLATFORM_MD3x0
             // Bump up volume a little bit, as on MD3x0 is quite low
-            int16_t setPoint = platform_getVolumeLevel() /12;
+            int16_t setPoint = platform_getVolumeLevel() /24;
             for(size_t i = 0; i < 160; i++) audioBuf[i] *= setPoint;
             #endif
             
