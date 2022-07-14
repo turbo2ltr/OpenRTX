@@ -297,9 +297,9 @@ static void *decodeFunc(void *arg)
             // Bump up volume a little bit, as on MD3x0 is quite low
             int16_t gain_vol = platform_getVolumeLevel() /16;
       
-            int16_t threshold = 30207;
-            int16_t gate = 256;
-            int16_t ratio = 3;
+            int16_t threshold = 27647;
+            int16_t gate = 512;
+            int16_t ratio = 4;
             int32_t sample;
             int32_t peak = 0;
             
