@@ -335,60 +335,6 @@ static void *decodeFunc(void *arg)
             }
             #endif
             
-            #if defined(PLATFORM_MD3x0) || defined(PLATFORM_MDUV3x0)
-            // We also need to ensure that the signal level after the amplification stays between -32767 and +32767 to avoid distortion
-            // platform_getVolumeLevel() returns a value between 0 and 255
-            
-                // Simple AGC, use volume knob position as set-point
-          /*      audio_sample_t maxPeak = 0;
-                for(size_t i = 0; i < 160; i++)
-                {
-                    audio_sample_t sample = abs(audioBuf[i]);
-                    if(sample > maxPeak) maxPeak = sample;
-                }
-
-                int16_t setPoint = platform_getVolumeLevel() << 7;
-            
-                int16_t gain     = setPoint/maxPeak;
-            
-
-                for(size_t i = 0; i < 160; i++) audioBuf[i] *= gain;
-                
-                
-                
-                
-            temp = abs(audioBuf[i]) * gain_vol;
-            if(temp > threshold)
-            {
-                
-            
-            sidechain = abs(audioBuf[i]);
-           
-            // out = sidechain vca * in
-            
-            
-            // if in  < threshold then out = in
-            // if in > threshold then
-            
-            
-            
-            for(size_t i = 0; i < 160; i++) 
-            {
-                sidechain =  audioBuf[i];
-                gainstage =  audioBuf[i];
-                
-                * gain_vol;
-                
-                if (audioBuf[i] != 0 && a / audioBuf[i] != gain_vol) 
-                { // distortion
-                    
-                    
-                }
-            
-            }
-                */
-            #endif
-
         }
         else
         {
