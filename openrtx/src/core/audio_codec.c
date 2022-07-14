@@ -295,10 +295,10 @@ static void *decodeFunc(void *arg)
 
             #ifdef PLATFORM_MD3x0
             // Bump up volume a little bit, as on MD3x0 is quite low
-            int16_t gain_vol = platform_getVolumeLevel() /24;
+            int16_t gain_vol = platform_getVolumeLevel() /16;
       
-            int16_t threshold = 24319;
-            int16_t ratio = 4;
+            int16_t threshold = 30207;
+            int16_t ratio = 3;
             int32_t sample;
             
             // peak detection
