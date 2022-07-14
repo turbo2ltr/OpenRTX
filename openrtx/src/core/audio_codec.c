@@ -19,11 +19,13 @@
  ***************************************************************************/
 
 #include <interfaces/audio_stream.h>
+#include <interfaces/platform.h>
 #include <audio_codec.h>
 #include <pthread.h>
 #include <codec2.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <dsp.h>
 
 #define BUF_SIZE 4
@@ -293,7 +295,22 @@ static void *decodeFunc(void *arg)
 
             #ifdef PLATFORM_MD3x0
             // Bump up volume a little bit, as on MD3x0 is quite low
-            for(size_t i = 0; i < 160; i++) audioBuf[i] *= 4;
+          //  for(size_t i = 0; i < 160; i++) audioBuf[i] *= 4;
+            #endif
+            
+            #if defined(PLATFORM_MD3x0) || defined(PLATFORM_MDUV3x0)
+                // Simple AGC, use volume knob position as set-point
+                audio_sample_t maxPeak = 0;
+                for(size_t i = 0; i < 160; i++)
+                {
+                    audio_sample_t sample = abs(audioBuf[i]);
+                    if(sample > maxPeak) maxPeak = sample;
+                }
+
+                int16_t setPoint = platform_getVolumeLevel() << 7;
+                int16_t gain     = setPoint/maxPeak;
+
+                for(size_t i = 0; i < 160; i++) audioBuf[i] *= gain;
             #endif
 
         }
