@@ -294,6 +294,11 @@ static void *decodeFunc(void *arg)
             codec2_decode(codec2, audioBuf, ((uint8_t *) &frame));
 
             #ifdef PLATFORM_MD3x0
+            // most basic volume control
+            int16_t gain_vol = platform_getVolumeLevel() /16;
+            for(size_t i = 0; i < 160; i++)audioBuf[i] *= gain_vol;
+            
+               /* 
             // Basic volume control with an effort to compress the top end and gate the bottom end.
             int16_t gain_vol = platform_getVolumeLevel() /16;
             int16_t threshold = 27647;
@@ -333,6 +338,7 @@ static void *decodeFunc(void *arg)
                         audioBuf[i] *= gain_vol;  
                 }
             }
+            */
             #endif
             
         }
