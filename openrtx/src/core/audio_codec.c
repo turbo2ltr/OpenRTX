@@ -312,7 +312,7 @@ static void *decodeFunc(void *arg)
                 avg += sample_abs;
                 
                // t =  audioBuf[i] ;
-                audioBuf[i] = (audio_sample_t)( ((int32_t)t * (int32_t)gain_vol) >> 7);
+                audioBuf[i] = (audio_sample_t)( ((int32_t)audioBuf[i] * (int32_t)gain_vol) >> 7);
             }
             
             avg /= 160;
