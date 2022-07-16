@@ -295,15 +295,27 @@ static void *decodeFunc(void *arg)
 
             #ifdef PLATFORM_MD3x0
             // most basic volume control
+            
             int16_t gain_vol = (platform_getVolumeLevel()<<7) /20;
             int32_t t;
+            int32_t peak = 0;
+            int16_t gateThresh = 512;
+            
             for(size_t i = 0; i < 160; i++)
             { 
+                if( audioBuf[i] > peak)
+                    peak =  audioBuf[i];
+                
                 t =  audioBuf[i] ;
                 
                 audioBuf[i] = (t * gain_vol) >> 7;
             }
             
+            if(peak < gateThresh)
+            {
+                for(size_t i = 0; i < 160; i++)
+                    audioBuf[i] = 0;
+            }
             
                /* 
             // Basic volume control with an effort to compress the top end and gate the bottom end.
