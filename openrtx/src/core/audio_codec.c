@@ -316,7 +316,7 @@ static void *decodeFunc(void *arg)
             avg /= 160;
             
             // calculate the compression ration for this block
-            sample = ((int32_t)peak * (int32_t)gain_vol) >> 7;   // what the peak would be after applying gain
+            sample = ((int32_t)peak * (int32_t)gain_vol) ;   // what the peak would be after applying gain
             ratio = 0x7FFF80 / (sample);    // our ratio.
             
             for(size_t i = 0; i < 160; i++)
