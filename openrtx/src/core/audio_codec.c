@@ -317,7 +317,7 @@ static void *decodeFunc(void *arg)
             
             // calculate the compression ration for this block
             sample = ((int32_t)peak * (int32_t)gain_vol) ;   // what the peak would be after applying gain
-            ratio = 0x7FFF80 / (sample);    // our ratio.
+            ratio = 0x7FFF00 / (sample);    // our ratio.
             
             for(size_t i = 0; i < 160; i++)
             {
@@ -331,12 +331,14 @@ static void *decodeFunc(void *arg)
                     audioBuf[i] = ((thresh32 + (sample - thresh32)) / ratio) >> 7;
                      
                 }
-                                
-                if(avg < gateThresh)    // gate it
-                    audioBuf[i] = 0;
-                else    
-                { // just adjust for volume
-                    audioBuf[i] = (audio_sample_t)( ((int32_t)audioBuf[i] * (int32_t)gain_vol) >> 7);   
+                else
+                {
+                    if(avg < gateThresh)    // gate it
+                        audioBuf[i] = 0;
+                    else    
+                    { // just adjust for volume
+                        audioBuf[i] = (audio_sample_t)( ((int32_t)audioBuf[i] * (int32_t)gain_vol) >> 7);   
+                    }
                 }
             }
                     
