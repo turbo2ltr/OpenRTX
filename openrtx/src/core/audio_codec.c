@@ -301,21 +301,47 @@ static void *decodeFunc(void *arg)
             audio_sample_t  peak = 0;
             audio_sample_t  sample_abs;
             int16_t gateThresh = 256;
-            
+            int16_t compThresh = 27647;
+            int32_t ratio = 3;
+            int32_t sample;
             for(size_t i = 0; i < 160; i++)
             { 
                 sample_abs = abs(audioBuf[i]);
                 if( sample_abs > peak)
                     peak =  sample_abs;
                 avg += sample_abs;
-                audioBuf[i] = (audio_sample_t)( ((int32_t)audioBuf[i] * (int32_t)gain_vol) >> 7);
+               // audioBuf[i] = (audio_sample_t)( ((int32_t)audioBuf[i] * (int32_t)gain_vol) >> 7);
             }
             
             avg /= 160;
             
-            if(avg < gateThresh)
-                for(size_t i = 0; i < 160; i++) audioBuf[i] = 0;
+            // calculate the compression ration for this block
+            sample = ((int32_t)peak * (int32_t)gain_vol) >> 7;   // what the peak would be after applying gain
+            ratio = 0x7FFF80 / (sample);    // our ratio.
+            
+            for(size_t i = 0; i < 160; i++)
+            {
+                if( peak > compThresh)
+                { // compression
+                    //sample = ((int32_t)audioBuf[i] * (int32_t)gain_vol) ;
+                    
+                    sample = ((int32_t)audioBuf[i] * (int32_t)gain_vol) ;
+                    int32_t thresh32 = threshold << 7;
+                    
+                    audioBuf[i] = ((thresh32 + (sample - thresh32)) / ratio) >> 7;
+                     
+                }
+                                
+                if(avg < gateThresh)    // gate it
+                    audioBuf[i] = 0;
+                else    
+                { // just adjust for volume
+                    audioBuf[i] = (audio_sample_t)( ((int32_t)audioBuf[i] * (int32_t)gain_vol) >> 7);   
+                }
             }
+                    
+
+            
             
                /* 
             // Basic volume control with an effort to compress the top end and gate the bottom end.
@@ -339,7 +365,7 @@ static void *decodeFunc(void *arg)
                     aboveThresh = true;
             }
             
-            if(aboveThresh)
+            if(aboveThresh)     // theres a peak in this  block above the thresheold
             {  // we need to compress
                 for(size_t i = 0; i < 160; i++)
                 {
