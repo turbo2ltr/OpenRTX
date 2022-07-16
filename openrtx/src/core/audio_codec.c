@@ -292,9 +292,9 @@ static void *decodeFunc(void *arg)
         if(newData)
         {
             codec2_decode(codec2, audioBuf, ((uint8_t *) &frame));
-
-            #ifdef PLATFORM_MD3x0
-            // most basic volume control
+            
+             #ifdef PLATFORM_MD3x0
+            
             
             int16_t gain_vol = (platform_getVolumeLevel()<<7) /20;
             int32_t avg = 0;
@@ -329,9 +329,9 @@ static void *decodeFunc(void *arg)
                     int32_t thresh32 = compThresh << 7;
                     
                     if(abs( audioBuf[i] ) ==  audioBuf[i] )
-                        audioBuf[i] = ((thresh32 + (sample - thresh32)) / ratio) >> 7;
+                        audioBuf[i] = (thresh32 + ((sample - thresh32) / ratio)) >> 7;
                     else
-                        audioBuf[i] = (((sample + thresh32) - thresh32) / ratio) >> 7;
+                        audioBuf[i] = (((sample + thresh32) / ratio) - thresh32) >> 7;
                      
                 }
                 else
@@ -389,7 +389,7 @@ static void *decodeFunc(void *arg)
                 }
             }
             */
-            #endif
+           #endif
             
         }
         else
