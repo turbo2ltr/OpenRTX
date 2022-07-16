@@ -299,19 +299,24 @@ static void *decodeFunc(void *arg)
             int16_t gain_vol = (platform_getVolumeLevel()<<7) /20;
             int32_t t;
             int32_t peak = 0;
+            int32_t avg = 0;
             int16_t gateThresh = 512;
-            
+            int16_t sample_abs;
             for(size_t i = 0; i < 160; i++)
             { 
-                if( audioBuf[i] > peak)
-                    peak =  audioBuf[i];
+                sample_abs = abs(audioBuf[i]);
+                if( sample_abs > peak)
+                    peak =  sample_abs;
+                
+                avg += sample_abs;
                 
                 t =  audioBuf[i] ;
-                
                 audioBuf[i] = (t * gain_vol) >> 7;
             }
             
-            if(peak < gateThresh)
+            avg /= 160;
+            
+            if(avg < gateThresh)
             {
                 for(size_t i = 0; i < 160; i++)
                     audioBuf[i] = 0;
