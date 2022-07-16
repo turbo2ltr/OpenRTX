@@ -300,7 +300,7 @@ static void *decodeFunc(void *arg)
             int32_t t;
             int32_t peak = 0;
             int32_t avg = 0;
-            int16_t gateThresh = 512;
+            int16_t gateThresh = 256;
             int16_t sample_abs;
             for(size_t i = 0; i < 160; i++)
             { 
