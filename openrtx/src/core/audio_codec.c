@@ -293,8 +293,32 @@ static void *decodeFunc(void *arg)
         {
             codec2_decode(codec2, audioBuf, ((uint8_t *) &frame));
             
-             #ifdef PLATFORM_MD3x0
             
+            #ifdef PLATFORM_MD3x0
+            // most basic volume control with noise gate
+            
+            int16_t gain_vol = (platform_getVolumeLevel()<<7) /20;
+            int32_t avg = 0;
+            audio_sample_t  peak = 0;
+            audio_sample_t  sample_abs;
+            int16_t gateThresh = 256;
+            
+            for(size_t i = 0; i < 160; i++)
+            { 
+                sample_abs = abs(audioBuf[i]);
+                if( sample_abs > peak)
+                    peak =  sample_abs;
+                avg += sample_abs;
+                audioBuf[i] = (audio_sample_t)( ((int32_t)audioBuf[i] * (int32_t)gain_vol) >> 7);
+            }
+            
+            avg /= 160;
+            
+            if(avg < gateThresh)
+                for(size_t i = 0; i < 160; i++) audioBuf[i] = 0;
+            
+            
+            /*
             
             int16_t gain_vol = (platform_getVolumeLevel()<<7) /20;
             int32_t avg = 0;
@@ -346,7 +370,7 @@ static void *decodeFunc(void *arg)
             }
                     
 
-            
+            */
             
                /* 
             // Basic volume control with an effort to compress the top end and gate the bottom end.
