@@ -326,7 +326,7 @@ static void *decodeFunc(void *arg)
                     //sample = ((int32_t)audioBuf[i] * (int32_t)gain_vol) ;
                     
                     sample = ((int32_t)audioBuf[i] * (int32_t)gain_vol) ;
-                    int32_t thresh32 = threshold << 7;
+                    int32_t thresh32 = compThresh << 7;
                     
                     audioBuf[i] = ((thresh32 + (sample - thresh32)) / ratio) >> 7;
                      
