@@ -297,11 +297,12 @@ static void *decodeFunc(void *arg)
             // most basic volume control
             
             int16_t gain_vol = (platform_getVolumeLevel()<<7) /20;
-            int32_t t;
-            int32_t peak = 0;
+            //int32_t t;
             int32_t avg = 0;
+            audio_sample_t  peak = 0;
+            audio_sample_t  sample_abs;
             int16_t gateThresh = 256;
-            int16_t sample_abs;
+            
             for(size_t i = 0; i < 160; i++)
             { 
                 sample_abs = abs(audioBuf[i]);
@@ -310,8 +311,8 @@ static void *decodeFunc(void *arg)
                 
                 avg += sample_abs;
                 
-                t =  audioBuf[i] ;
-                audioBuf[i] = (t * gain_vol) >> 7;
+               // t =  audioBuf[i] ;
+                audioBuf[i] = (audio_sample_t)( ((int32_t)t * (int32_t)gain_vol) >> 7);
             }
             
             avg /= 160;
