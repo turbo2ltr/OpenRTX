@@ -316,10 +316,10 @@ static void *decodeFunc(void *arg)
                 audioBuf[i] = (audio_sample_t)( ((int32_t)audioBuf[i] * (int32_t)gain_vol) >> 7);
             }
             
-            avg /= 160;
+           // avg /= 160;
             
-            if(avg < gateThresh)
-                for(size_t i = 0; i < 160; i++) audioBuf[i] = 0;
+          //  if(avg < gateThresh)
+           //     for(size_t i = 0; i < 160; i++) audioBuf[i] = 0;
             
             
             /*
